@@ -10,12 +10,12 @@ Can you even call it an app if it is a lone API?
 
 ## ☑️ What's been achieved?
 - A few models (Message, User)
+- JWT Auth (access tokens, refresh tokens to be done yet)
 - Made relations between them (1:N User-Msgs) (damned fluent api)
+- Like actually existing endpoints (registration, login and auth test for now)
 
 ## 🚲 What's to do?
 - More models
-- JWT Auth
-- Like actually existing endpoints
 - Controllers
 - Services
 - you name it

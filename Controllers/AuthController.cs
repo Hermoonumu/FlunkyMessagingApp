@@ -70,6 +70,7 @@ public class AuthController : ControllerBase
     {
         string token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ')[1];
         User user = await _authSvc.UserByJWTClaims(token);
+        if (user is null) return StatusCode(401, "nope, check ur token, or refresh it");
         return Ok(Mappers.UserMapper.UserToAuthDTO(user));
     }
 }
