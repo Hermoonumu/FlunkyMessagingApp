@@ -5,6 +5,7 @@ using MessagingApp.Models;
 using MessagingApp.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics.Metrics;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace MessagingApp.Controllers;
 
@@ -50,6 +51,18 @@ public class AuthController : ControllerBase
             case User user: return Ok(newRegUser);
             case null: return StatusCode(400, "A user with such username already exists.");
         }
-    } 
+    }
+    #endregion
+
+    #region "loging user in"
+
+    [HttpPost("login")]
+    public async Task<ActionResult<string>> Login([FromBody] AuthDTO aDTO)
+    {
+        int authResult = await _userSvc.AuthenticateUser(aDTO);
+        if (authResult == 1) return StatusCode(404, "No such user");
+        if (authResult == 2) return StatusCode(401, "Incorrect password");
+        return Ok(_userSvc.GetUser(aDTO).Result);
+    }
     #endregion
 }
