@@ -10,6 +10,8 @@ Can you even call it an app if it is a lone API?
 
 ## ☑️ What's been achieved?
 - A few models (Message, User)
+- Chatting between users
+- Filtering messages by already read and not read, as well as all the messages
 - JWT Auth (access tokens, refresh tokens to be done yet)
 - Made relations between them (1:N User-Msgs) (damned fluent api)
 - Like actually existing endpoints (registration, login and auth test for now)
