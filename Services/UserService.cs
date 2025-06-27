@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using MessagingApp.DTO;
 using MessagingApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -15,8 +17,13 @@ public class UserService
     }
 
 
-    public async Task<int> AddUser(User user)
+    public async Task<User> AddUser(UserDTO user)
     {
+        PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
+        User newRegUser = new User();
+        newRegUser.Username = user.Username;
+        newRegUser.PasswordHash = passwordHasher.HashPassword(newRegUser, user.Password);
+        newRegUser.Role = Models.User.RoleENUM.USER;
         try
         {
             await _db.Users.AddAsync(user);
@@ -26,9 +33,9 @@ public class UserService
         {
             if (((NpgsqlException)e.InnerException).SqlState == "23505")
             {
-                return 1;
+                return null;
             }
         }
-        return 0;
+        return newRegUser;
     }
 }

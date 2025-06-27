@@ -44,17 +44,12 @@ public class AuthController : ControllerBase
         {
             return StatusCode(400, "Bad Request, couldn't create a user, hit up API DOC");
         }
-        PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
-        User newRegUser = new User();
-        newRegUser.Username = uDTO.Username;
-        newRegUser.PasswordHash = passwordHasher.HashPassword(newRegUser, uDTO.Password);
-        newRegUser.Role = Models.User.RoleENUM.USER;
-        switch (await _userSvc.AddUser(newRegUser))
+        User newRegUser = await _userSvc.AddUser(uDTO);
+        switch (newRegUser)
         {
-            case 0: return Ok(newRegUser);
-            case 1: return StatusCode(400, "A user with such username already exists.");
+            case User user: return Ok(newRegUser);
+            case null: return StatusCode(400, "A user with such username already exists.");
         }
-        return StatusCode(500, "sth happened yes, but tf I know what precisely");
     } 
     #endregion
 }
