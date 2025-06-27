@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using MessagingApp.DTO;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MessagingApp.Services;
 
@@ -82,10 +84,21 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
     }
 
 
-    public async Task<User> UserByJWTClaims(string token)
+    public async Task<User> UserByJWTAsync(HttpContext context)
     {
-        var decodedToken = await VerifyToken(token);
-        if (decodedToken.Identity.IsAuthenticated == false)
+        string[] token = context.Request.Headers["Authorization"].ToString().Split(' ');
+        if (token.Count() < 2) return null;
+        if (token[0] != "Bearer") return null;
+        ClaimsPrincipal decodedToken;
+        try
+        {
+            decodedToken = await VerifyToken(token[1]);
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            return null;
+        }
+        if (decodedToken.Identity!.IsAuthenticated == false)
         {
             return null;
         }

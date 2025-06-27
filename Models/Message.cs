@@ -8,7 +8,8 @@ public class Message
     public long OriginID { set; get; }
     public long? DestinationID { set; get; }
     public User OriginUser { set; get; }
-    public User DestinationUser { set; get; }
+    public User? DestinationUser { set; get; }
+    public bool isRead { set; get; } = false;
 
 
     public string Text { set; get; }

@@ -3,7 +3,6 @@ using System.Text;
 using MessagingApp;
 using MessagingApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -14,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<MessageService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(option => { option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
 

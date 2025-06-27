@@ -4,8 +4,6 @@ using MessagingApp.Mappers;
 using MessagingApp.Models;
 using MessagingApp.Services;
 using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace MessagingApp.Controllers;
 
@@ -68,8 +66,7 @@ public class AuthController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<object>> AuthTest()
     {
-        string token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ')[1];
-        User user = await _authSvc.UserByJWTClaims(token);
+        User user = await _authSvc.UserByJWTAsync(HttpContext);
         if (user is null) return StatusCode(401, "nope, check ur token, or refresh it");
         return Ok(Mappers.UserMapper.UserToAuthDTO(user));
     }
