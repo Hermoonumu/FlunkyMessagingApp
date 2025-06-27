@@ -2,15 +2,15 @@ namespace MessagingApp.Models;
 
 public class User
 {
-    public long ID { set; get; }
+    public long? ID { set; get; }
     public string Username { set; get; }
     public string PasswordHash { set; get; }
     public RoleENUM Role { set; get; }
 
 
     public List<Message> SentMessages
-    { set; get; }
-    public List<Message> ReceivedMessages { set; get; }
+    { set; get; } = new List<Message>();
+    public List<Message> ReceivedMessages { set; get; } = new List<Message>();
 
     public enum RoleENUM
     {

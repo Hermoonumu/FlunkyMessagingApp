@@ -59,9 +59,17 @@
               "target": "Package",
               "version": "[9.0.6, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.12.1, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.4, )"
+            },
+            "System.Security.Claims": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             },
             "microsoft.aspnetcore.authentication.jwtbearer": {
               "target": "Package",
