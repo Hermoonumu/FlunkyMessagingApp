@@ -7,6 +7,7 @@ public class DataContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { set; get; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,5 +33,17 @@ public class DataContext : DbContext
             .HasForeignKey(m => m.OriginID)
             .OnDelete(DeleteBehavior.Restrict);
         });
+
+        modelBuilder.Entity<RefreshToken>(
+            token =>
+            {
+                token.HasOne(u => u.user)
+                .WithMany()
+                .HasForeignKey(tk => tk.UserID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                token.HasKey(tk => tk.ID);
+            }
+        );
     }
 }

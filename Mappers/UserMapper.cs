@@ -28,4 +28,13 @@ public class UserMapper
             Username = aDTO.Username == null ? String.Empty : aDTO.Username
         };
     }
+
+    public static AuthDTO UserToAuthDTO(User user)
+    {
+        return new AuthDTO()
+        {
+            Username = user.Username,
+            Password = "N/A"
+        };
+    }
 }

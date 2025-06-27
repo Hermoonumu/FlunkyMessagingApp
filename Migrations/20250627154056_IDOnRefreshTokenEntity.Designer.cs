@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessagingApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250626162636_RolesAndRegister")]
-    partial class RolesAndRegister
+    [Migration("20250627154056_IDOnRefreshTokenEntity")]
+    partial class IDOnRefreshTokenEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,37 @@ namespace MessagingApp.Migrations
                     b.HasIndex("OriginID");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("MessagingApp.Models.RefreshToken", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("UserID")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("isRevoked")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("MessagingApp.Models.User", b =>
@@ -96,6 +127,17 @@ namespace MessagingApp.Migrations
                     b.Navigation("DestinationUser");
 
                     b.Navigation("OriginUser");
+                });
+
+            modelBuilder.Entity("MessagingApp.Models.RefreshToken", b =>
+                {
+                    b.HasOne("MessagingApp.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("MessagingApp.Models.User", b =>

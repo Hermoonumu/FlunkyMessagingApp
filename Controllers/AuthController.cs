@@ -3,9 +3,9 @@ using MessagingApp.DTO;
 using MessagingApp.Mappers;
 using MessagingApp.Models;
 using MessagingApp.Services;
-using Microsoft.AspNetCore.Identity;
-using System.Diagnostics.Metrics;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace MessagingApp.Controllers;
 
@@ -23,17 +23,12 @@ public class AuthController : ControllerBase
         _userSvc = userSvc;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<String>> Hello()
-    {
-        return StatusCode(200, "HIII!!!!");
-    }
 
     [HttpPost("ExampleToken")]
     public async Task<ActionResult<string>> GetExampleJWTToken([FromBody] AuthDTO urDTO)
     {
         User user = UserMapper.RegDTOToUser(urDTO);
-        return StatusCode(200, _authSvc.GenerateToken(user));
+        return StatusCode(200, _authSvc.GenerateTokens(user));
     }
 
     #region "registering user"
@@ -62,7 +57,19 @@ public class AuthController : ControllerBase
         int authResult = await _userSvc.AuthenticateUser(aDTO);
         if (authResult == 1) return StatusCode(404, "No such user");
         if (authResult == 2) return StatusCode(401, "Incorrect password");
-        return Ok(_userSvc.GetUser(aDTO).Result);
+
+        return Ok(await _authSvc.GenerateTokens(_userSvc.GetUser(aDTO).Result));
     }
     #endregion
+
+
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<object>> AuthTest()
+    {
+        string token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ')[1];
+        User user = await _authSvc.UserByJWTClaims(token);
+        return Ok(Mappers.UserMapper.UserToAuthDTO(user));
+    }
 }

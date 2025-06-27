@@ -1,6 +1,6 @@
 
-
 using System.Text;
+using MessagingApp;
 using MessagingApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -31,11 +31,19 @@ builder.Services
         x.SaveToken = true;
         x.TokenValidationParameters = new TokenValidationParameters
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(MessagingApp.Settings.PrivateKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Settings.PrivateKey)),
+            ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
-            ValidateAudience = false
+            ValidIssuer = Settings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = Settings.Audience,
+            ValidateLifetime = true
         };
     });
+
+builder.Services.AddLogging(builder =>
+    builder.AddConsole()
+           .AddFilter("Microsoft.AspNetCore.Authentication.JwtBearer", LogLevel.Debug));
 builder.Services.AddAuthorization();
 
 
