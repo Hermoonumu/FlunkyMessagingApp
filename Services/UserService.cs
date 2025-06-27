@@ -18,7 +18,7 @@ public class UserService
     }
 
 
-    public async Task<User> AddUser(UserDTO user)
+    public async Task<User> AddUser(AuthDTO user)
     {
         PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
         User newRegUser = new User();

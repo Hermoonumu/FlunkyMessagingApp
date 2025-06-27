@@ -28,20 +28,23 @@ public class AuthController : ControllerBase
         return StatusCode(200, "HIII!!!!");
     }
 
-    [HttpGet("ExampleToken")]
-    public async Task<ActionResult<string>> GetExampleJWTToken([FromBody] UserDTO uDTO)
+    [HttpPost("ExampleToken")]
+    public async Task<ActionResult<string>> GetExampleJWTToken([FromBody] AuthDTO urDTO)
     {
-        User user = UserMapper.DTOToUser(uDTO);
+        User user = UserMapper.RegDTOToUser(urDTO);
         return StatusCode(200, _authSvc.GenerateToken(user));
     }
 
     #region "registering user"
 
     [HttpPost("register")]
-    public async Task<ActionResult<User>> Register([FromBody] UserDTO uDTO)
+    public async Task<ActionResult<User>> Register([FromBody] AuthDTO aDTO)
     {
-        if (!await uDTO.AddUserValidate()) return StatusCode(400, "Invalid registration form");
-        User newRegUser = await _userSvc.AddUser(uDTO);
+        int validationResult = await aDTO.AddUserValidate();
+        if (validationResult == 1) return StatusCode(400, "Invalid registration form.");
+        if (validationResult == 2) return StatusCode(400, "Username is less than 6 characters long.");
+        if (validationResult == 3) return StatusCode(400, "Password is less than 8 characters long.");
+        User newRegUser = await _userSvc.AddUser(aDTO);
         switch (newRegUser)
         {
             case User user: return Ok(newRegUser);
