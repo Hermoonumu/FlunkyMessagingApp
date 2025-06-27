@@ -40,10 +40,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register([FromBody] UserDTO uDTO)
     {
-        if (uDTO.Username == null || uDTO.Password == null || String.Equals(uDTO.Password, "") || String.Equals(uDTO.Username, ""))
-        {
-            return StatusCode(400, "Bad Request, couldn't create a user, hit up API DOC");
-        }
+        if (!await uDTO.AddUserValidate()) return StatusCode(400, "Invalid registration form");
         User newRegUser = await _userSvc.AddUser(uDTO);
         switch (newRegUser)
         {

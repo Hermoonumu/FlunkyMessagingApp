@@ -13,4 +13,20 @@ public class UserDTO
     public List<MessagingApp.Models.Message>? SentMessages
     { set; get; } = null;
     public List<MessagingApp.Models.Message>? ReceivedMessages { set; get; } = null;
+
+
+
+    public async Task<bool> AddUserValidate()
+    {
+        if (
+            ID != null
+            || Role != null
+            || SentMessages != null
+            || ReceivedMessages != null
+            || Username == null
+            || Password == null
+            || String.Equals(Password, "")
+            || String.Equals(Username, "")) return false;
+        return true;
+    }
 }

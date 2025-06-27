@@ -14,7 +14,8 @@
           "Microsoft.IdentityModel.Tokens": "8.12.1",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "System.Security.Claims": "4.3.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.6"
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.6",
+          "Scalar.AspNetCore": "2.5.3"
         },
         "runtime": {
           "MessagingApp.dll": {}
@@ -624,6 +625,14 @@
           }
         }
       },
+      "Scalar.AspNetCore/2.5.3": {
+        "runtime": {
+          "lib/net9.0/Scalar.AspNetCore.dll": {
+            "assemblyVersion": "2.5.3.0",
+            "fileVersion": "2.5.3.0"
+          }
+        }
+      },
       "System.CodeDom/6.0.0": {
         "runtime": {
           "lib/net6.0/System.CodeDom.dll": {
@@ -1092,6 +1101,13 @@
       "sha512": "sha512-mw5vcY2IEc7L+IeGrxpp/J5OSnCcjkjAgJYCm/eD52wpZze8zsSifdqV7zXslSMmfJG2iIUGZyo3KuDtEFKwMQ==",
       "path": "npgsql.entityframeworkcore.postgresql/9.0.4",
       "hashPath": "npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512"
+    },
+    "Scalar.AspNetCore/2.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GhMaITeqvKVDLH/RyAH93n1uSkrP/JNI7cRIPUr5bsHjSiVSmhM68Ni+0x1IORnU5O68YiZJX2DcdGbLuEe9aQ==",
+      "path": "scalar.aspnetcore/2.5.3",
+      "hashPath": "scalar.aspnetcore.2.5.3.nupkg.sha512"
     },
     "System.CodeDom/6.0.0": {
       "type": "package",

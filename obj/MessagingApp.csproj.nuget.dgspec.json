@@ -74,6 +74,10 @@
             "microsoft.aspnetcore.authentication.jwtbearer": {
               "target": "Package",
               "version": "[9.0.6, )"
+            },
+            "scalar.aspnetcore": {
+              "target": "Package",
+              "version": "[2.5.3, )"
             }
           },
           "imports": [

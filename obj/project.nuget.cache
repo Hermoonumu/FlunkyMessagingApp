@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "uAD2Uzvm+3E=",
+  "dgSpecHash": "QVIGB8OA4SU=",
   "success": true,
   "projectFilePath": "/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/MessagingApp.csproj",
   "expectedPackageFiles": [
@@ -43,6 +43,7 @@
     "/home/hermoonumu/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/npgsql/9.0.3/npgsql.9.0.3.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.4/npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/scalar.aspnetcore/2.5.3/scalar.aspnetcore.2.5.3.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/system.codedom/6.0.0/system.codedom.6.0.0.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/system.collections/4.3.0/system.collections.4.3.0.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/system.collections.immutable/7.0.0/system.collections.immutable.7.0.0.nupkg.sha512",

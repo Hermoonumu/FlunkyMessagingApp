@@ -12,7 +12,8 @@ namespace MessagingApp.Services;
 public class UserService
 {
     private readonly DataContext _db;
-    public UserService(DataContext db) {
+    public UserService(DataContext db)
+    {
         _db = db;
     }
 
