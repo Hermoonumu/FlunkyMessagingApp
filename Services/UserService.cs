@@ -26,7 +26,7 @@ public class UserService
         newRegUser.Role = Models.User.RoleENUM.USER;
         try
         {
-            await _db.Users.AddAsync(user);
+            await _db.Users.AddAsync(newRegUser);
             await _db.SaveChangesAsync();
         }
         catch (DbUpdateException e)
