@@ -14,6 +14,7 @@ public class AuthService : ServiceCollection
         ClaimsIdentity claims = new ClaimsIdentity();
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Username));
         claims.AddClaim(new Claim(ClaimTypes.Role, user.Role.ToString()));
+        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()));
         return claims;
     }
 
