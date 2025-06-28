@@ -7,19 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Expressions.Internal;
 
-namespace MessagingApp.Services;
+namespace MessagingApp.Services.Implementation;
 
-
-public class UserService
+public class UserService(DataContext _db) : IUserService
 {
-    private readonly DataContext _db;
-    public UserService(DataContext db)
-    {
-        _db = db;
-    }
-
-
-    public async Task<User> AddUser(AuthDTO user)
+    public async Task<User> AddUserAsync(AuthDTO user)
     {
         PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
         User newRegUser = new User();
@@ -42,7 +34,7 @@ public class UserService
     }
 
 
-    public async Task<int> AuthenticateUser(AuthDTO userCreds)
+    public async Task<int> AuthenticateUserAsync(AuthDTO userCreds)
     {
         User potentialUser = _db.Users.FirstOrDefault(search => search.Username == userCreds.Username);
         if (potentialUser == null) return 1;
@@ -51,7 +43,7 @@ public class UserService
         return 0;
     }
 
-    public async Task<User?> GetUser(AuthDTO userCreds)
+    public async Task<User?> GetUserAsync(AuthDTO userCreds)
     {
         return await _db.Users
         .Include(u => u.ReceivedMessages)

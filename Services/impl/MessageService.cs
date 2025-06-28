@@ -1,11 +1,10 @@
 using MessagingApp.DTO;
 using MessagingApp.Models;
 using Microsoft.EntityFrameworkCore;
+namespace MessagingApp.Services.Implementation;
 
-namespace MessagingApp.Services;
 
-
-public class MessageService(DataContext _db, UserService _userSvc) : ServiceCollection
+public class MessageService(DataContext _db, IUserService _userSvc) : IMessageService
 {
     public async Task<int> SendMessageAsync(User OriginUser, MessageSendForm msgSend)
     {

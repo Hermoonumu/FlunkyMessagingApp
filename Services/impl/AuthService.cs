@@ -5,15 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using MessagingApp.DTO;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MessagingApp.Services;
+namespace MessagingApp.Services.Implementation;
 
 
-public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollection
+public class AuthService(DataContext _db, IUserService _userSvc, IConfiguration _conf) : IAuthService
 {
-    private ClaimsIdentity getClaims(User user)
+    public ClaimsIdentity getClaims(User user)
     {
         ClaimsIdentity claims = new ClaimsIdentity();
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Username!));
@@ -22,11 +19,11 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
         return claims;
     }
 
-    public async Task<Dictionary<string, string>> GenerateTokens(User user)
+    public async Task<Dictionary<string, string>> GenerateTokensAsync(User user)
     {
         Dictionary<string, string> tokens = new Dictionary<string, string>();
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-        byte[] key = Encoding.ASCII.GetBytes(MessagingApp.Settings.PrivateKey);
+        byte[] key = Encoding.ASCII.GetBytes(_conf.GetSection("SecConfig").GetValue<String>("PrivateKey")!);
         SigningCredentials credentials = new SigningCredentials
             (
                 new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature
@@ -35,8 +32,8 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
         SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = getClaims(user),
-            Issuer = MessagingApp.Settings.Issuer,
-            Audience = MessagingApp.Settings.Audience,
+            Issuer = _conf.GetSection("SecConfig").GetValue<String>("Issuer"),
+            Audience = _conf.GetSection("SecConfig").GetValue<String>("Audience"),
             Expires = DateTime.Now.AddMinutes(30),
             SigningCredentials = credentials
         };
@@ -57,7 +54,7 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
             user = user,
             Token = tokens["refreshToken"],
             IssuedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow + Settings.RefreshTokenValidTerm,
+            ExpiresAt = DateTime.UtcNow + TimeSpan.FromMinutes(10),
             isRevoked = false
         });
 
@@ -66,18 +63,20 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
     }
 
 
-    public async Task<ClaimsPrincipal> VerifyToken(string token)
+    public async Task<ClaimsPrincipal> VerifyTokenAsync(string token)
     {
         var handler = new JwtSecurityTokenHandler();
         var validationResult = handler.ValidateToken(token,
         new TokenValidationParameters()
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Settings.PrivateKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+                _conf.GetSection("SecConfig").GetValue<String>("PrivateKey")!
+                )),
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
-            ValidIssuer = Settings.Issuer,
+            ValidIssuer = _conf.GetSection("SecConfig").GetValue<String>("Issuer")!,
             ValidateAudience = true,
-            ValidAudience = Settings.Audience,
+            ValidAudience = _conf.GetSection("SecConfig").GetValue<String>("Audience")!,
             ValidateLifetime = true
         }, out SecurityToken validatedToken);
         return validationResult;
@@ -92,7 +91,7 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
         ClaimsPrincipal decodedToken;
         try
         {
-            decodedToken = await VerifyToken(token[1]);
+            decodedToken = await VerifyTokenAsync(token[1]);
         }
         catch (SecurityTokenExpiredException)
         {
@@ -103,6 +102,6 @@ public class AuthService(DataContext _db, UserService _userSvc) : ServiceCollect
             return null;
         }
         string username = decodedToken.Claims.Select(c => c.Value).ToList()[0];
-        return await _userSvc.GetUser(new AuthDTO() { Username = username });
+        return await _userSvc.GetUserAsync(new AuthDTO() { Username = username });
     }
 }

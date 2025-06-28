@@ -2,6 +2,7 @@
 using System.Text;
 using MessagingApp;
 using MessagingApp.Services;
+using MessagingApp.Services.Implementation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddTransient<AuthService>();
-builder.Services.AddTransient<UserService>();
-builder.Services.AddTransient<MessageService>();
+builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(option => { option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
@@ -31,12 +32,14 @@ builder.Services
         x.SaveToken = true;
         x.TokenValidationParameters = new TokenValidationParameters
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Settings.PrivateKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+                builder.Configuration.GetSection("SecConfig").GetValue<String>("PrivateKey")
+            )),
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
-            ValidIssuer = Settings.Issuer,
+            ValidIssuer = builder.Configuration.GetSection("SecConfig").GetValue<String>("Issuer"),
             ValidateAudience = true,
-            ValidAudience = Settings.Audience,
+            ValidAudience = builder.Configuration.GetSection("SecConfig").GetValue<String>("Audience"),
             ValidateLifetime = true
         };
     });
@@ -50,11 +53,13 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.UseRouting();
-app.MapControllers();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+app.MapControllers();
 app.MapOpenApi();
 app.MapScalarApiReference();
 

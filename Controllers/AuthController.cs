@@ -10,23 +10,15 @@ namespace MessagingApp.Controllers;
 
 [ApiController]
 [Route("/api/auth")]
-public class AuthController : ControllerBase
+public class AuthController(IUserService _userSvc, IAuthService _authSvc) : ControllerBase
 {
-    private readonly UserService _userSvc;
-    private readonly AuthService _authSvc;
-
-    public AuthController(UserService userSvc, AuthService auth)
-    {
-        _authSvc = auth;
-        _userSvc = userSvc;
-    }
 
 
     [HttpPost("ExampleToken")]
     public async Task<ActionResult<string>> GetExampleJWTToken([FromBody] AuthDTO urDTO)
     {
         User user = UserMapper.RegDTOToUser(urDTO);
-        return StatusCode(200, _authSvc.GenerateTokens(user));
+        return StatusCode(200, _authSvc.GenerateTokensAsync(user));
     }
 
     #region "registering user"
@@ -38,7 +30,7 @@ public class AuthController : ControllerBase
         if (validationResult == 1) return StatusCode(400, "Invalid registration form.");
         if (validationResult == 2) return StatusCode(400, "Username is less than 6 characters long.");
         if (validationResult == 3) return StatusCode(400, "Password is less than 8 characters long.");
-        User newRegUser = await _userSvc.AddUser(aDTO);
+        User newRegUser = await _userSvc.AddUserAsync(aDTO);
         switch (newRegUser)
         {
             case User user: return Ok(newRegUser);
@@ -52,11 +44,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<string>> Login([FromBody] AuthDTO aDTO)
     {
-        int authResult = await _userSvc.AuthenticateUser(aDTO);
+        int authResult = await _userSvc.AuthenticateUserAsync(aDTO);
         if (authResult == 1) return StatusCode(404, "No such user");
         if (authResult == 2) return StatusCode(401, "Incorrect password");
 
-        return Ok(await _authSvc.GenerateTokens(_userSvc.GetUser(aDTO).Result));
+        return Ok(await _authSvc.GenerateTokensAsync(_userSvc.GetUserAsync(aDTO).Result));
     }
     #endregion
 

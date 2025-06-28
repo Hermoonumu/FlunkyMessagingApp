@@ -1,16 +1,14 @@
-using System.Net;
 using MessagingApp.DTO;
 using MessagingApp.Models;
 using MessagingApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace MessagingApp.Controllers;
 
 [ApiController]
 [Route("/api/message")]
-public class MessageController(MessageService _msgSvc, AuthService _authSvc) : ControllerBase
+public class MessageController(IMessageService _msgSvc, IAuthService _authSvc) : ControllerBase
 {
     [Authorize]
     [HttpPost("send")]
@@ -26,7 +24,7 @@ public class MessageController(MessageService _msgSvc, AuthService _authSvc) : C
         }
         return StatusCode(100, "wut");
     }
-
+    [Authorize]
     [HttpGet("readReceived")]
     public async Task<ActionResult<List<MessageReceivedDTO>>> ReadMessagesAsync([FromQuery] string unreadNotRead="null")
     {
