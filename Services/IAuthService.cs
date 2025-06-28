@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MessagingApp.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MessagingApp.Services;
 

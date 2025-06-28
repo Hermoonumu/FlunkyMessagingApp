@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MessagingApp.Services.Implementation
 
@@ -13,21 +14,21 @@ public class LoggerService : ILoggerService, IDisposable{
         _conf = conf;
         WriteTo(null);
     }
-    public void LogInfo(string msg, string source){
+    public async Task LogInfo(string msg, string source){
         if (writeTo==null){throw new PathNotSetException("You didn't set a path to a logging file");}
         try{
-            writeTo.WriteLine(new StringBuilder().Append($"[Info@{source}]: ").Append(msg));
-            writeTo.Flush();
+            await writeTo.WriteLineAsync(new StringBuilder().Append($"[Info@{source}]: ").Append(msg));
+            await writeTo.FlushAsync();
         } catch (IOException e) {
             throw new Exception($"Couldn't log to a file: {e}");
         }
         logsNo++;
     }
-    public void LogError(string msg, string source){
+    public async Task LogError(string msg, string source){
         if (writeTo==null){throw new PathNotSetException("You didn't set a path to a logging file");}
         try{
-            writeTo.WriteLine(new StringBuilder().Append($"[Error@{source}]: ").Append(msg));
-            writeTo.Flush();
+            await writeTo.WriteLineAsync(new StringBuilder().Append($"[Error@{source}]: ").Append(msg));
+            await writeTo.FlushAsync();
         } catch (IOException e) {
             throw new Exception($"Couldn't log to a file: {e}");
         }

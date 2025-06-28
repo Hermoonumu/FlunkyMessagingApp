@@ -1,0 +1,180 @@
+[Info@AUTH]: localhost:6865 is trying to obtain token-pair
+[Info@USERSvc]: Trying to authenticate user
+[Error@USERSvc]: Attempting to pull user off DB
+[Info@USERSvc]: User authenticated, returning success to the caller
+[Info@AUTH]: Proceeding to generation of a tokenpair for 1234567890
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@AUTHTokenGen]: Generating tokenpair for 1234567890
+[Info@AUTHClaimGen]: Generating token claims for 1234567890
+[Info@AUTHTokenGen]: Populating token dict
+[Info@AUTHTokenGen]: Generating random refresh token
+[Info@AUTHTokenGen]: Purging previous refresh tokens of user 1234567890
+[Info@AUTHTokenGen]: Saving newly generated token to DB
+[Info@AUTHTokenGen]: Tokenpair succesfully generated, passing result to the caller
+[Info@MSG]: localhost:6865 attempts to send a message to 1234567890
+[Info@MSG]: Invoking SendMessageAsync
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: 1234567890 sends message to 1234567890
+[Info@MSGSvc]: Composing an instance of Message obj
+[Info@MSGSvc]: Saving message to DB
+[Info@MSGSvc]: Message successfully sent
+[Info@MSG]: Message sent successfully
+[Info@MSG]: localhost:6865 attemts to read own  unread  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  unread messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: Filtering msgs
+[Info@MSGSvc]: Ticking unread messages as read
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
+[Info@MSG]: localhost:6865 attemts to read own  unread  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  unread messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: Filtering msgs
+[Info@MSGSvc]: Ticking unread messages as read
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
+[Info@MSG]: localhost:6865 attemts to read own  all  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  all messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: No filter is applied
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
+[Info@MSG]: localhost:6865 attemts to read own  all  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  all messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: No filter is applied
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
+[Info@MSG]: localhost:6865 attemts to read own  all  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  all messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: No filter is applied
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
+[Info@MSG]: localhost:6865 attemts to read own  all  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  all messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: No filter is applied
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
+[Info@MSG]: localhost:6865 attemts to read own  all  messages
+[Info@MSG]: Invoking UserByJWTAsync, passing HttpContext
+[Info@AUTHJWTToUSR]: Initiated retrieving user by access token
+[Info@AUTHJWTToUSR]: Disassembling HTTP header
+[Info@AUTHJWTToUSR]: Invoking token verification
+[Info@AUTHTokenVerify]: Verifying the token that's been provided by the caller
+[Info@AUTHTokenVerify]: Instantiating object with validation parameters
+[Info@AUTHTokenVerify]: Token successfully verified, passing claims to the caller
+[Info@AUTHJWTToUSR]: Extracting claims from token
+[Info@AUTHJWTToUSR]: Invoking GetUserAsync, passing in username
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Returning results to the caller
+[Info@MSG]: Invoking GetUserReceivedMessagesAsync, passing user and filter
+[Info@MSGSvc]: 1234567890tries to read  all messages
+[Info@USERSvc]: Attempting to obtain user with credentials
+[Info@USERSvc]: Including messages to the query
+[Info@USERSvc]: Returning results to the caller
+[Info@MSGSvc]: Instantiating new list of filtered messages
+[Info@MSGSvc]: No filter is applied
+[Info@MSGSvc]: Saving isRead flag of each msg to DB
+[Info@MSGSvc]: Successfully retrieved and filtered msgs, returning list of them to caller
