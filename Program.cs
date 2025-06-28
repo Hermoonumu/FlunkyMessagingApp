@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddSingleton<ILoggerService, LoggerService>();
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(option => { option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
@@ -44,14 +46,11 @@ builder.Services
         };
     });
 
-builder.Services.AddLogging(builder =>
-    builder.AddConsole()
-           .AddFilter("Microsoft.AspNetCore.Authentication.JwtBearer", LogLevel.Debug));
-builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseRouting();
 
 
@@ -64,5 +63,5 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 
 
-app.UseHttpsRedirection();
+
 app.Run();

@@ -8,5 +8,5 @@ public interface IUserService
 {
     public Task<User> AddUserAsync(AuthDTO user);
     public Task<int> AuthenticateUserAsync(AuthDTO userCreds);
-    public Task<User?> GetUserAsync(AuthDTO userCreds);
+    public Task<User?> GetUserAsync(AuthDTO userCreds, bool includeMsgs);
 }

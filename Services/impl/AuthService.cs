@@ -83,7 +83,7 @@ public class AuthService(DataContext _db, IUserService _userSvc, IConfiguration 
     }
 
 
-    public async Task<User> UserByJWTAsync(HttpContext context)
+    public async Task<User?> UserByJWTAsync(HttpContext context)
     {
         string[] token = context.Request.Headers["Authorization"].ToString().Split(' ');
         if (token.Count() < 2) return null;
@@ -102,6 +102,6 @@ public class AuthService(DataContext _db, IUserService _userSvc, IConfiguration 
             return null;
         }
         string username = decodedToken.Claims.Select(c => c.Value).ToList()[0];
-        return await _userSvc.GetUserAsync(new AuthDTO() { Username = username });
+        return await _userSvc.GetUserAsync(new AuthDTO() { Username = username }, false);
     }
 }
