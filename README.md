@@ -15,6 +15,7 @@ Can you even call it an app if it is a lone API?
 - JWT Auth (access tokens, refresh tokens to be done yet)
 - Made relations between them (1:N User-Msgs) (damned fluent api)
 - Like actually existing endpoints (registration, login and auth test for now)
+- Some very basic logging (NOT THREAD SAFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!) (because I implemented it lol)
 
 ## 🚲 What's to do?
 - More models
