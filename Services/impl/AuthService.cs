@@ -11,12 +11,10 @@ namespace MessagingApp.Services.Implementation;
 
 public class AuthService(DataContext _db,
                             IUserService _userSvc,
-                            IConfiguration _conf,
-                            ILoggerService _logSvc) : IAuthService
+                            IConfiguration _conf) : IAuthService
 {
     public ClaimsIdentity getClaims(User user)
     {
-        _logSvc.LogInfo($"Generating token claims for {user.Username}", "AUTHClaimGen");
         ClaimsIdentity claims = new ClaimsIdentity();
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Username!));
         claims.AddClaim(new Claim(ClaimTypes.Role, user.Role.ToString()!));
@@ -27,7 +25,6 @@ public class AuthService(DataContext _db,
 
     public async Task<Dictionary<string, string>> GenerateTokensAsync(User user)
     {
-        await _logSvc.LogInfo($"Generating tokenpair for {user.Username}", "AUTHTokenGen");
         Dictionary<string, string> tokens = new Dictionary<string, string>();
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
         byte[] key = Encoding.ASCII.GetBytes(_conf.GetSection("SecConfig").GetValue<String>("PrivateKey")!);
@@ -44,20 +41,15 @@ public class AuthService(DataContext _db,
             Expires = DateTime.Now.AddMinutes(30),
             SigningCredentials = credentials
         };
-        await _logSvc.LogInfo("Populating token dict", "AUTHTokenGen");
-        tokens.Add("accessToken", handler.WriteToken(handler.CreateToken(tokenDescriptor)));
+                tokens.Add("accessToken", handler.WriteToken(handler.CreateToken(tokenDescriptor)));
         byte[] randStringToken = new byte[128];
-        await _logSvc.LogInfo("Generating random refresh token", "AUTHTokenGen");
         RandomNumberGenerator.Create().GetBytes(randStringToken);
         tokens.Add("refreshToken", Convert.ToBase64String(randStringToken)!);
-
-        await _logSvc.LogInfo($"Purging previous refresh tokens of user {user.Username}", "AUTHTokenGen");
         List<RefreshToken> tokensBelongingToUser = _db.RefreshTokens.Where(tk => tk.UserID == user.ID).ToList();
         foreach (RefreshToken i in tokensBelongingToUser)
         {
             _db.RefreshTokens.Remove(i);
         }
-        await _logSvc.LogInfo("Saving newly generated token to DB", "AUTHTokenGen");
         _db.RefreshTokens.Add(new RefreshToken()
         {
             UserID = (long)user.ID!,
@@ -68,16 +60,13 @@ public class AuthService(DataContext _db,
         });
 
         await _db.SaveChangesAsync();
-        await _logSvc.LogInfo("Tokenpair succesfully generated, passing result to the caller", "AUTHTokenGen");
         return tokens;
     }
 
 
     public async Task<TokenDTO?> VerifyTokenAsync(string token)
     {
-        await _logSvc.LogInfo("Verifying the token that's been provided by the caller", "AUTHTokenVerify");
         var handler = new JwtSecurityTokenHandler();
-        await _logSvc.LogInfo("Instantiating object with validation parameters", "AUTHTokenVerify");
         ClaimsPrincipal claims;
         SecurityToken secToken;
         try
@@ -98,28 +87,22 @@ public class AuthService(DataContext _db,
         }
         catch (Exception)
         {
-            await _logSvc.LogError("Cound't verify a token", "AUTHTokenVerify");
             return null;
         }
-        await _logSvc.LogInfo("Token successfully verified, passing claims to the caller", "AUTHTokenVerify");
         return new TokenDTO() { claims = claims, SecToken = secToken };
     }
 
 
     public async Task<User?> UserByJWTAsync(HttpContext context)
     {
-        await _logSvc.LogInfo("Initiated retrieving user by access token", "AUTHJWTToUSR");
         ClaimsIdentity decodedToken;
-        await _logSvc.LogInfo("Extracting token claims", "AUTHJWTToUSR");
         decodedToken = (context.User.Identity as ClaimsIdentity)!;
         string username = decodedToken.Claims.Select(c => c.Value).ToList()[0];
-        await _logSvc.LogInfo("Invoking GetUserAsync, passing in username", "AUTHJWTToUSR");
         return await _userSvc.GetUserAsync(new AuthDTO() { Username = username }, false);
     }
 
     public async Task<string> ExtractTokenFromHeaderAsync(HttpContext context)
     {
-        await _logSvc.LogInfo("Disassembling HTTP header", "AUTHTokenFromHeader");
         string[] token = context.Request.Headers["Authorization"].ToString().Split(' ');
         return token[1];
     }

@@ -4,6 +4,7 @@ using System.Text;
 using MessagingApp;
 using MessagingApp.Services;
 using MessagingApp.Services.Implementation;
+using MessagingApp.Validator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
-builder.Services.AddSingleton<ILoggerService, LoggerService>();
+builder.Services.AddSingleton<IValidationService, ValidationService>();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(option => { option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
