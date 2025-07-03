@@ -6,6 +6,7 @@ public class User
     public string Username { set; get; }
     public string PasswordHash { set; get; }
     public RoleENUM Role { set; get; }
+    public List<Chat> enrolledChats{ set; get; }
 
 
     public List<Message> SentMessages

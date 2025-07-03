@@ -51,5 +51,34 @@ public class DataContext : DbContext
         {
             token.HasKey(tk => tk.ID);
         });
+
+        //TORTURE M:M
+
+
+
+
+        modelBuilder.Entity<User>(user =>
+        {
+            user.HasMany(u => u.enrolledChats)
+            .WithMany(cht => cht.Members)
+            .UsingEntity<Dictionary<string, string>>(
+                "UserChatJoinTable",
+                tbl =>
+                    tbl.HasOne<Chat>()
+                    .WithMany()
+                    .HasForeignKey("ChatID")
+                    .HasConstraintName("FK_UserChatJoinTable_Chats_ChatID"),
+                tbl =>
+                    tbl.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey("UserID")
+                    .HasConstraintName("FK_UserChatJoinTable_Users_UserID"),
+                tbl =>
+                {
+                    tbl.HasKey("ChatID", "UserID");
+                    tbl.ToTable("UserChatJoinTable");
+                }
+            );
+        });
     }
 }

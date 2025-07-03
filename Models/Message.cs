@@ -10,6 +10,7 @@ public class Message
     public User OriginUser { set; get; }
     public User? DestinationUser { set; get; }
     public bool isRead { set; get; } = false;
+    public Chat? chat { set; get; }
 
 
     public string Text { set; get; }
