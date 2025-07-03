@@ -1,7 +1,6 @@
 using MessagingApp.DTO;
 using MessagingApp.Models;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.TypeMapping;
 namespace MessagingApp.Services.Implementation;
 
 

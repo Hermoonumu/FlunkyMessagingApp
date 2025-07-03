@@ -9,5 +9,4 @@ public class RefreshToken
     public string Token { set; get; }
     public DateTime IssuedAt { set; get; }
     public DateTime ExpiresAt { set; get; }
-    public bool isRevoked { set; get; }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessagingApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250703082416_revokation")]
+    partial class revokation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,6 +78,9 @@ namespace MessagingApp.Migrations
                     b.Property<long>("UserID")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("isRevoked")
+                        .HasColumnType("boolean");
+
                     b.HasKey("ID");
 
                     b.HasIndex("UserID");
@@ -89,10 +95,6 @@ namespace MessagingApp.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<string>("JTI")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Token")
                         .IsRequired()

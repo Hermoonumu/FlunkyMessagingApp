@@ -1,4 +1,5 @@
 
+using System.Data;
 using System.Text;
 using MessagingApp;
 using MessagingApp.Services;
@@ -42,7 +43,17 @@ builder.Services
             ValidIssuer = builder.Configuration.GetSection("SecConfig").GetValue<String>("Issuer"),
             ValidateAudience = true,
             ValidAudience = builder.Configuration.GetSection("SecConfig").GetValue<String>("Audience"),
-            ValidateLifetime = true
+            ValidateLifetime = true,
+        };
+        x.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var db = context.HttpContext.RequestServices.GetRequiredService<DataContext>();
+                var jti = context.SecurityToken.Id;
+                var isRevoked = await db.revokedJWTs.FirstOrDefaultAsync(x => x.JTI == jti);
+                if (isRevoked!=null){ context.Fail("Token has been revoked"); }
+            }
         };
     });
 

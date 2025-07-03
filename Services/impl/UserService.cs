@@ -1,4 +1,5 @@
 using MessagingApp.DTO;
+using MessagingApp.Exceptions;
 using MessagingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ public class UserService(DataContext _db, ILoggerService _logSvc) : IUserService
     }
 
 
-    public async Task<int> AuthenticateUserAsync(AuthDTO userCreds)
+    public async Task AuthenticateUserAsync(AuthDTO userCreds)
     {
         await _logSvc.LogInfo("Trying to authenticate user", "USERSvc");
         await _logSvc.LogError("Attempting to pull user off DB", "USERSvc");
@@ -46,14 +47,14 @@ public class UserService(DataContext _db, ILoggerService _logSvc) : IUserService
         if (potentialUser == null)
         {
             await _logSvc.LogError("User not found", "USERSvc");
-            return 1;
+            throw new UserDoesntExistException();
         }
         if (new PasswordHasher<User>().VerifyHashedPassword(potentialUser, potentialUser.PasswordHash, userCreds.Password)
         == PasswordVerificationResult.Failed) {
             await _logSvc.LogError("Password hash check failed, check the password", "USERSvc");
-            return 2; }
+            throw new PasswordCheckFailedException();
+        }
         await _logSvc.LogInfo("User authenticated, returning success to the caller", "USERSvc");
-        return 0;
     }
 
     public async Task<User?> GetUserAsync(AuthDTO userCreds, bool includeMsgs = false)

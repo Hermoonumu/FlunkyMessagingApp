@@ -8,6 +8,7 @@ public class DataContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<RefreshToken> RefreshTokens { set; get; }
+    public DbSet<RevokedJWTs> revokedJWTs { set; get; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,5 +46,10 @@ public class DataContext : DbContext
                 token.HasKey(tk => tk.ID);
             }
         );
+
+        modelBuilder.Entity<RevokedJWTs>(token =>
+        {
+            token.HasKey(tk => tk.ID);
+        });
     }
 }
