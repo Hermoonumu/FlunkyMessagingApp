@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessagingApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250703124804_lol")]
+    partial class lol
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,6 +23,19 @@ namespace MessagingApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("MessagingApp.Models.Chat", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Chat");
+                });
 
             modelBuilder.Entity("MessagingApp.Models.Message", b =>
                 {
@@ -42,6 +58,9 @@ namespace MessagingApp.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<long?>("chatID")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("isRead")
                         .HasColumnType("boolean");
 
@@ -50,6 +69,8 @@ namespace MessagingApp.Migrations
                     b.HasIndex("DestinationID");
 
                     b.HasIndex("OriginID");
+
+                    b.HasIndex("chatID");
 
                     b.ToTable("Messages");
                 });
@@ -129,6 +150,21 @@ namespace MessagingApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("UserChatJoinTable", b =>
+                {
+                    b.Property<long>("ChatID")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserID")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ChatID", "UserID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserChatJoinTable", (string)null);
+                });
+
             modelBuilder.Entity("MessagingApp.Models.Message", b =>
                 {
                     b.HasOne("MessagingApp.Models.User", "DestinationUser")
@@ -142,9 +178,15 @@ namespace MessagingApp.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("MessagingApp.Models.Chat", "chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("chatID");
+
                     b.Navigation("DestinationUser");
 
                     b.Navigation("OriginUser");
+
+                    b.Navigation("chat");
                 });
 
             modelBuilder.Entity("MessagingApp.Models.RefreshToken", b =>
@@ -156,6 +198,28 @@ namespace MessagingApp.Migrations
                         .IsRequired();
 
                     b.Navigation("user");
+                });
+
+            modelBuilder.Entity("UserChatJoinTable", b =>
+                {
+                    b.HasOne("MessagingApp.Models.Chat", null)
+                        .WithMany()
+                        .HasForeignKey("ChatID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserChatJoinTable_Chats_ChatID");
+
+                    b.HasOne("MessagingApp.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserChatJoinTable_Users_UserID");
+                });
+
+            modelBuilder.Entity("MessagingApp.Models.Chat", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("MessagingApp.Models.User", b =>

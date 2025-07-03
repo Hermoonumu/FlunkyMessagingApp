@@ -1,7 +1,7 @@
-using MessagingApp.Migrations;
 using MessagingApp.Models;
+using MessagingApp.DTO;
 
-namespace MessagingApp.DTO;
+namespace MessagingApp.Mappers;
 
 
 public class MessageMapper

@@ -1,6 +1,7 @@
 using MessagingApp.DTO;
 using MessagingApp.Exceptions;
 using MessagingApp.Models;
+using MessagingApp.Mappers;
 using Microsoft.EntityFrameworkCore;
 namespace MessagingApp.Services.Implementation;
 

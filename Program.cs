@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddTransient<IChatService, ChatService>();
 builder.Services.AddSingleton<IValidationService, ValidationService>();
 
 builder.Services.AddControllers();

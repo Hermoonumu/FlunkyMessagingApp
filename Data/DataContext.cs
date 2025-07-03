@@ -9,6 +9,7 @@ public class DataContext : DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<RefreshToken> RefreshTokens { set; get; }
     public DbSet<RevokedJWTs> revokedJWTs { set; get; }
+    public DbSet<Chat> Chats { set; get; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,6 +34,10 @@ public class DataContext : DbContext
             .WithMany(u => u.SentMessages)
             .HasForeignKey(m => m.OriginID)
             .OnDelete(DeleteBehavior.Restrict);
+
+            msg.HasIndex(m => new { m.ChatID, m.Timestamp })
+            .HasDatabaseName("IX_Messages_ChatId_CreatedAt_Desc")
+            .IsDescending([false, true]);
         });
 
         modelBuilder.Entity<RefreshToken>(
@@ -79,6 +84,19 @@ public class DataContext : DbContext
                     tbl.ToTable("UserChatJoinTable");
                 }
             );
+        });
+
+        modelBuilder.Entity<Chat>(chat =>
+        {
+            chat.HasKey(cht => cht.ID);
+
+            chat.HasMany<Message>(cht => cht.Messages)
+            .WithOne()
+            .HasForeignKey(msg => msg.ChatID);
+
+            chat.HasOne(cht => cht.Owner)
+            .WithOne()
+            .HasForeignKey<Chat>(cht => cht.OwnerID);
         });
     }
 }
