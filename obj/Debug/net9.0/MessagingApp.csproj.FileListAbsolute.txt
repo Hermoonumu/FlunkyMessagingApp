@@ -48,7 +48,6 @@
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/System.Composition.Runtime.dll
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/System.Composition.TypedParts.dll
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
-/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/System.Text.Json.dll
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/cs/Microsoft.CodeAnalysis.resources.dll
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/de/Microsoft.CodeAnalysis.resources.dll
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/es/Microsoft.CodeAnalysis.resources.dll
