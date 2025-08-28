@@ -73,6 +73,20 @@ builder.Services
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { Message = "Error has occurred" });
+    }
+});
+
 app.Urls.Add("http://0.0.0.0:6865");
 
 app.UseHttpsRedirection();
