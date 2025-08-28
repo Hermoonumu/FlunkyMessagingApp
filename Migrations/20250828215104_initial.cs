@@ -7,13 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessagingApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "revokedJWTs",
+                name: "revoked_jwts",
                 columns: table => new
                 {
                     ID = table.Column<long>(type: "bigint", nullable: false)
@@ -23,7 +23,7 @@ namespace MessagingApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_revokedJWTs", x => x.ID);
+                    table.PrimaryKey("PK_revoked_jwts", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,10 +55,11 @@ namespace MessagingApp.Migrations
                 {
                     table.PrimaryKey("PK_Chats", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Chats_Users_OwnerID",
+                        name: "FK_OwnerChat",
                         column: x => x.OwnerID,
                         principalTable: "Users",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,7 +105,8 @@ namespace MessagingApp.Migrations
                         name: "FK_Messages_Chats_ChatID",
                         column: x => x.ChatID,
                         principalTable: "Chats",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Messages_Chats_chatID",
                         column: x => x.chatID,
@@ -148,11 +150,39 @@ namespace MessagingApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MessageReadUsers",
+                columns: table => new
+                {
+                    MessageId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MessageReadUsers", x => new { x.MessageId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_MessageReadUsers_Messages_MessageId",
+                        column: x => x.MessageId,
+                        principalTable: "Messages",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MessageReadUsers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Chats_OwnerID",
                 table: "Chats",
-                column: "OwnerID",
-                unique: true);
+                column: "OwnerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MessageReadUsers_UserId",
+                table: "MessageReadUsers",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_chatID",
@@ -190,16 +220,19 @@ namespace MessagingApp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "MessageReadUsers");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "revokedJWTs");
+                name: "revoked_jwts");
 
             migrationBuilder.DropTable(
                 name: "UserChatJoinTable");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Chats");

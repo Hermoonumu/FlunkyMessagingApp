@@ -12,6 +12,7 @@ public class Message
     public bool isRead { set; get; } = false;
     public Chat? chat { set; get; }
     public long? ChatID{ set; get; }
+    public List<User> readByUsers{ set; get; }
 
 
     public string Text { set; get; }

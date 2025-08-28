@@ -10,10 +10,11 @@ public class MessageMapper
     {
         return new MessageReceivedDTO()
         {
-            SenderUsername = message.OriginUser.Username,
+            SenderUsername = message.OriginUser?.Username??"Unknown",
             Timestamp = message.Timestamp,
-            MessageText = message.Text,
+            MessageText = message.Text?? String.Empty,
             isRead = message.isRead
+
         };
     }
 }

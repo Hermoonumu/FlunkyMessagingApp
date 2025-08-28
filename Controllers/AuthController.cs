@@ -47,7 +47,7 @@ public class AuthController(IUserService _userSvc,
         {
             case User user: return Ok(aDTO);
             case null:
-                return StatusCode(400, "A user with such username already exists.");
+                return StatusCode(409, "A user with such username already exists.");
         }
     }
     #endregion

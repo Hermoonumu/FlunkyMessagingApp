@@ -138,3 +138,7 @@
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/obj/Debug/net9.0/MessagingApp.genruntimeconfig.cache
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/obj/Debug/net9.0/ref/MessagingApp.dll
 /run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/Scalar.AspNetCore.dll
+/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/xunit.abstractions.dll
+/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/xunit.assert.dll
+/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/xunit.core.dll
+/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/bin/Debug/net9.0/xunit.execution.dotnet.dll

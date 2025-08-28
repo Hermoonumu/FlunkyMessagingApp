@@ -4,6 +4,7 @@ using MessagingApp.Models;
 using MessagingApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Xunit.Sdk;
 
 namespace MessagingApp.Controllers;
 
@@ -28,14 +29,20 @@ public class MessageController( IMessageService _msgSvc,
     }
     [Authorize]
     [HttpGet("readReceived")]
-    public async Task<ActionResult<List<MessageReceivedDTO>>> ReadMessagesAsync([FromQuery] string unreadNotRead="null")
-    {   Boolean.TryParse(unreadNotRead, out bool result);
+    public async Task<ActionResult<List<MessageReceivedDTO>>> ReadMessagesAsync([FromQuery] string unreadNotRead="null",
+                                                                                [FromQuery] string last = "10",
+                                                                                [FromQuery] string skip = "0")
+    {
         User user = await _authSvc.UserByJWTAsync(HttpContext);
-        if (user is null) {
-            return Unauthorized("check ur token"); }
-        bool? state;
-        try { state = Boolean.Parse(unreadNotRead); }
-        catch (FormatException){ state = null; }
-        return Ok(await _msgSvc.GetUserReceivedMessagesAsync(user, state));
+        bool? _unreadNotRead;
+        try { _unreadNotRead = Boolean.Parse(unreadNotRead); }
+        catch (FormatException){ _unreadNotRead = null; }
+        int _last;
+        try { int.TryParse(last, out _last); }
+        catch (FormatException) { return BadRequest("Invalid last"); }
+        int _skip;
+        try { int.TryParse(skip, out _skip); }
+        catch (FormatException) { return BadRequest("Invalid skip"); }
+        return Ok(await _msgSvc.GetUserReceivedMessagesAsync(user, _unreadNotRead, _last, _skip));
     }
 }

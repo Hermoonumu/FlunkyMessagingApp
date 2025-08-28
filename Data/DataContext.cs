@@ -30,6 +30,15 @@ public class DataContext : DbContext
             .HasForeignKey(m => m.DestinationID)
             .OnDelete(DeleteBehavior.Restrict);
 
+                modelBuilder.Entity<Message>()
+                .HasMany(m => m.readByUsers)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "MessageReadUsers", // Join table name
+                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    j => j.HasOne<Message>().WithMany().HasForeignKey("MessageId")
+        );
+
             msg.HasOne(m => m.OriginUser)
             .WithMany(u => u.SentMessages)
             .HasForeignKey(m => m.OriginID)
@@ -86,17 +95,22 @@ public class DataContext : DbContext
             );
         });
 
+        modelBuilder.Entity<RevokedJWTs>().ToTable("revoked_jwts");
+
         modelBuilder.Entity<Chat>(chat =>
         {
             chat.HasKey(cht => cht.ID);
 
             chat.HasMany<Message>(cht => cht.Messages)
             .WithOne()
-            .HasForeignKey(msg => msg.ChatID);
+            .HasForeignKey(msg => msg.ChatID)
+            .OnDelete(DeleteBehavior.Cascade);
 
-            chat.HasOne(cht => cht.Owner)
-            .WithOne()
-            .HasForeignKey<Chat>(cht => cht.OwnerID);
+            chat.HasOne(c => c.Owner)
+            .WithMany(u => u.OwnedChats)
+            .HasForeignKey(c => c.OwnerID)
+            .HasConstraintName("FK_OwnerChat")
+            .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
