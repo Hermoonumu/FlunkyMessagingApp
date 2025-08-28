@@ -15,10 +15,11 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.12.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt"   Version="8.12.1" /> <!---->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" /> <!---->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="scalar.aspnetcore" Version="2.5.3" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>
 
 </Project>

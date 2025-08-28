@@ -27,11 +27,18 @@ public class MessageService(DataContext _db, IUserService _userSvc) : IMessageSe
         await _db.SaveChangesAsync();
     }
 
-    public async Task<List<MessageReceivedDTO>> GetUserReceivedMessagesAsync(User user, bool? unreadNotRead = null)
+    public async Task<List<MessageReceivedDTO>> GetUserReceivedMessagesAsync(User user, bool? unreadNotRead = null, int last = 10, int skip=0)
     {
+        Console.WriteLine($"\n\n\n\n\n\n\nskip={skip}, last={last}\n\n\n\n\n\n\n\n\n\n");
 
-        List<Message>? messages =
-        (await _userSvc.GetUserAsync(new AuthDTO() { Username = user.Username }, true)).ReceivedMessages;
+        List<Message>? messages = await _db.Messages
+                                    .Where(m => m.DestinationID == user.ID)
+                                    .Include(m => m.OriginUser)
+                                    .OrderByDescending(m => m.Timestamp)
+                                    .Skip(skip)
+                                    .Take(last) 
+                                    .AsNoTracking()
+                                    .ToListAsync();
 
         if (messages == null) return null; 
         List<MessageReceivedDTO> messagesToShow = new List<MessageReceivedDTO>();

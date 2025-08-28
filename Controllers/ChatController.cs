@@ -18,9 +18,39 @@ public class ChatController(IAuthService _authSvc, IMessageService _msgSvc, ICha
     public async Task<IActionResult> NewChatAsync([FromBody] NewChatDTO ncDTO)
     {
         User user = await _authSvc.UserByJWTAsync(HttpContext);
-        await _chtSvc.CreateNewChatAsync(user, ncDTO);
+        try
+        {
+            await _chtSvc.CreateNewChatAsync(user, ncDTO);
+        }
+        catch (ChatAlreadyExistsException e)
+        {
+            return BadRequest(e.Message);
+        }
+
         return Ok($"Created chat named {ncDTO.Name}, owned by {user.Username}");
     }
+
+    [Authorize]
+    [HttpPost("newMember")]
+    public async Task<IActionResult> AddMemberToChatAsync([FromBody] NewMemberChatDTO nmcDTO)
+    {
+        int countOfAdded = default;
+        User user = await _authSvc.UserByJWTAsync(HttpContext);
+        try
+        {
+            countOfAdded = await _chtSvc.AddMembersToChatAsync(user, nmcDTO);
+        }
+        catch (ChatDoesntExistException)
+        {
+            return NotFound("This chat doesn't exist");
+        }
+        catch (MemberAlreadyInChatException e)
+        {
+            return Ok(e.Message);
+        }
+        return Ok($"Added {countOfAdded} members");
+    }
+
 
     [Authorize]
     [HttpGet("myChats")]
@@ -53,25 +83,30 @@ public class ChatController(IAuthService _authSvc, IMessageService _msgSvc, ICha
     [Authorize]
     [HttpGet("readChatMsgs")]
     public async Task<ActionResult<List<MessageReceivedDTO>>> ReadMessagesFromChatAsync([FromQuery] string chatid,
-                                                                                        [FromQuery] string last="10")
+                                                                                        [FromQuery] string last = "10",
+                                                                                        [FromQuery] string skip = "0",
+                                                                                        [FromQuery] string unreadNotRead = "null",
+                                                                                        [FromQuery] string polling = "false")
     {
-        int _last = 0;
-        long _chatid = 0;
-        if (String.Empty != chatid) {
-            if (!long.TryParse(chatid, out _chatid))
-            {
-                return BadRequest("Invalid chatid");
-            } }
-        if (String.Empty != last) {
-            if (!int.TryParse(last, out _last))
-            {
-                return BadRequest("Invalid last"); 
-            }
-        }
+        int _last;
+        int _skip;
+        long _chatid;
+        bool? _unreadNotRead;
+        bool _polling;
+        try { _unreadNotRead = Boolean.Parse(unreadNotRead); }
+        catch (FormatException) { _unreadNotRead = null; }
+        try { long.TryParse(chatid, out _chatid); }
+        catch (FormatException) { return BadRequest("Invalid chatid"); }
+        try { int.TryParse(last, out _last); }
+        catch (FormatException) { return BadRequest("Invalid last"); }
+        try { int.TryParse(skip, out _skip); }
+        catch (FormatException) { return BadRequest("Invalid last"); }
+        try { _polling = Boolean.Parse(polling); }
+        catch (FormatException) { _polling = false; }
         User user = await _authSvc.UserByJWTAsync(HttpContext);
         try
         {
-            return Ok(await _chtSvc.ReadChatMsgs(_chatid, (long)user.ID!, _last));
+            return Ok(await _chtSvc.ReadChatMsgs(_chatid, (long)user.ID!, _unreadNotRead, _skip, _last, _polling));
         }
         catch (NotChatMemberException)
         {
@@ -82,4 +117,31 @@ public class ChatController(IAuthService _authSvc, IMessageService _msgSvc, ICha
             return BadRequest("No such chat exists");
         }
     }
+
+    [Authorize]
+    [HttpDelete()]
+    public async Task<IActionResult> DelChatAsync([FromBody] DelChatDTO dcDTO)
+    {
+        if (dcDTO.ID == null || dcDTO.ID == 0)
+        {
+            return BadRequest("Please specify chat ID");
+        }
+        User user = await _authSvc.UserByJWTAsync(HttpContext);
+        try
+        {
+            await _chtSvc.DelChatAsync(user, (long)dcDTO.ID!);
+        }
+        catch (ChatDoesntExistException _)
+        {
+            return NotFound("Such chat couldn't be found");
+        }
+        catch (NotChatAdminException _)
+        {
+            return Unauthorized("You are not this chat's admin to delete it");
+        }
+
+        return Ok("Chat deleted");
+
+    }
+
 }

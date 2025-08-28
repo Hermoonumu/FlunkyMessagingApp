@@ -56,7 +56,7 @@ public class AuthService(DataContext _db,
             user = user,
             Token = tokens["refreshToken"],
             IssuedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow + TimeSpan.FromMinutes(10)
+            ExpiresAt = DateTime.UtcNow + TimeSpan.FromDays(_conf.GetSection("SecConfig").GetValue<int>("DurationDays"))
         });
 
         await _db.SaveChangesAsync();
@@ -120,6 +120,9 @@ public class AuthService(DataContext _db,
             _db.SaveChanges();
         }
     }
+
+
+
 
     public async Task<Dictionary<string, string>?> RefreshTokensAsync(string refreshToken)
     {
