@@ -15,7 +15,7 @@ public class ChatController(IAuthService _authSvc, IMessageService _msgSvc, ICha
 
     [Authorize]
     [HttpPost("newChat")]
-    public async Task<IActionResult> NewChatAsync([FromBody] NewChatDTO ncDTO)
+    public async Task<IActionResult> NewChatAsync([FromBody] ChatDescDTO ncDTO)
     {
         User user = await _authSvc.UserByJWTAsync(HttpContext);
         try
@@ -49,6 +49,31 @@ public class ChatController(IAuthService _authSvc, IMessageService _msgSvc, ICha
             return Ok(e.Message);
         }
         return Ok($"Added {countOfAdded} members");
+    }
+
+    [Authorize]
+    [HttpGet("memberList")]
+    public async Task<ActionResult<List<string>>> getChatMemebersAsync([FromQuery] string chatID)
+    {
+        User user = await _authSvc.UserByJWTAsync(HttpContext);
+
+        try
+        {
+            return await _chtSvc.GetChatMembersAsync(user, long.Parse(chatID));
+        }
+        catch (FormatException)
+        {
+            return BadRequest("Invalid chatID");
+        }
+        catch (ChatDoesntExistException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (NotChatMemberException e)
+        {
+            return Unauthorized(e.Message);
+        }
+
     }
 
 

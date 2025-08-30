@@ -17,11 +17,11 @@ public class AuthController(IUserService _userSvc,
                             IValidationService _valid) : ControllerBase
 {
 
-    [HttpPost("ExampleToken")]
+    [HttpPost("RetrieveExpiredToken")]
     public async Task<ActionResult<string>> GetExampleJWTToken([FromBody] AuthDTO urDTO)
     {
-        User user = UserMapper.RegDTOToUser(urDTO);
-        return StatusCode(200, _authSvc.GenerateTokensAsync(user));
+        User user = (await _userSvc.GetUserAsync(urDTO, false))!;
+        return StatusCode(200, await _authSvc.GenerateTokensAsync(user, true));
     }
 
     #region "registering user"
@@ -42,11 +42,11 @@ public class AuthController(IUserService _userSvc,
         {
             return StatusCode(400, "Password is less than 8 characters long.");
         }
-        User newRegUser = await _userSvc.AddUserAsync(aDTO);
-        switch (newRegUser)
+        bool regSuccess = await _userSvc.AddUserAsync(aDTO);
+        switch (regSuccess)
         {
-            case User user: return Ok(aDTO);
-            case null:
+            case true: return Ok("User succesfully created");
+            case false:
                 return StatusCode(409, "A user with such username already exists.");
         }
     }
@@ -81,7 +81,7 @@ public class AuthController(IUserService _userSvc,
         {
             return StatusCode(401, "nope, check ur token, or refresh it");
         }
-        return Ok(UserMapper.UserToAuthDTO(user));
+        return Ok("Authorized");
     }
 
     [Authorize]

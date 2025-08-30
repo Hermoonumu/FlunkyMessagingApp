@@ -1,7 +1,4 @@
-
-using System.Data;
 using System.Text;
-using MessagingApp;
 using MessagingApp.Services;
 using MessagingApp.Services.Implementation;
 using MessagingApp.Validator;
@@ -28,7 +25,7 @@ builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddTransient<IChatService, ChatService>();
-builder.Services.AddSingleton<IValidationService, ValidationService>();
+builder.Services.AddScoped<IValidationService, ValidationService>();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(option => { option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
@@ -56,6 +53,7 @@ builder.Services
             ValidateAudience = true,
             ValidAudience = builder.Configuration.GetSection("SecConfig").GetValue<String>("Audience"),
             ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(0)
         };
         x.Events = new JwtBearerEvents
         {
@@ -79,11 +77,11 @@ app.Use(async (context, next) =>
     {
         await next();
     }
-    catch
+    catch (Exception e)
     {
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsJsonAsync(new { Message = "Error has occurred" });
+        await context.Response.WriteAsJsonAsync(new { Message = "Error has occurred "+e.GetBaseException() });
     }
 });
 
@@ -104,3 +102,5 @@ app.MapScalarApiReference();
 
 
 app.Run();
+
+public partial class Program { }

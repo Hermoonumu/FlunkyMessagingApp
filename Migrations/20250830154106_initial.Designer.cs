@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessagingApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250828215104_initial")]
+    [Migration("20250830154106_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -214,7 +214,7 @@ namespace MessagingApp.Migrations
             modelBuilder.Entity("MessagingApp.Models.Chat", b =>
                 {
                     b.HasOne("MessagingApp.Models.User", "Owner")
-                        .WithMany("OwnedChats")
+                        .WithMany()
                         .HasForeignKey("OwnerID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_OwnerChat");
@@ -286,8 +286,6 @@ namespace MessagingApp.Migrations
 
             modelBuilder.Entity("MessagingApp.Models.User", b =>
                 {
-                    b.Navigation("OwnedChats");
-
                     b.Navigation("ReceivedMessages");
 
                     b.Navigation("SentMessages");

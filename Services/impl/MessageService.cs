@@ -29,7 +29,6 @@ public class MessageService(DataContext _db, IUserService _userSvc) : IMessageSe
 
     public async Task<List<MessageReceivedDTO>> GetUserReceivedMessagesAsync(User user, bool? unreadNotRead = null, int last = 10, int skip=0)
     {
-        Console.WriteLine($"\n\n\n\n\n\n\nskip={skip}, last={last}\n\n\n\n\n\n\n\n\n\n");
 
         List<Message>? messages = await _db.Messages
                                     .Where(m => m.DestinationID == user.ID)
@@ -37,7 +36,6 @@ public class MessageService(DataContext _db, IUserService _userSvc) : IMessageSe
                                     .OrderByDescending(m => m.Timestamp)
                                     .Skip(skip)
                                     .Take(last) 
-                                    .AsNoTracking()
                                     .ToListAsync();
 
         if (messages == null) return null; 
@@ -58,7 +56,7 @@ public class MessageService(DataContext _db, IUserService _userSvc) : IMessageSe
                 foreach (Message i in messages) if (i.isRead == false) i.isRead = true;
                 break;
         }
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
         return messagesToShow;
     }
 }

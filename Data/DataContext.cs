@@ -107,7 +107,7 @@ public class DataContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
             chat.HasOne(c => c.Owner)
-            .WithMany(u => u.OwnedChats)
+            .WithMany() //used to specify owned chats
             .HasForeignKey(c => c.OwnerID)
             .HasConstraintName("FK_OwnerChat")
             .OnDelete(DeleteBehavior.Restrict);

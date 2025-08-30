@@ -7,16 +7,12 @@ using MessagingApp.Services;
 using Microsoft.EntityFrameworkCore;
 using MessagingApp.Mappers;
 
-public class ChatService(DataContext _db) : IChatService
+public class ChatService(DataContext _db, IValidationService _valSvc) : IChatService
 {
 
-    public async Task CreateNewChatAsync(User owner, NewChatDTO ncDTO)
+    public async Task CreateNewChatAsync(User owner, ChatDescDTO ncDTO)
     {
-        if ((await _db.Chats.FirstOrDefaultAsync(cht => cht.Name == ncDTO.Name)) != null)
-        {
-            throw new ChatAlreadyExistsException($"Chat \"{ncDTO.Name}\" aready exists");
-        }
-        Console.WriteLine("In chatsvc");
+        await _valSvc.ValidateChatAlreadyExists(ncDTO.Name);
         Chat chat = new Chat()
         {
             Owner = owner,
@@ -32,15 +28,28 @@ public class ChatService(DataContext _db) : IChatService
         await _db.SaveChangesAsync();
     }
 
-    public async Task<Dictionary<string, long>> GetUserAvailableChats(long UserID)
+    public async Task<List<UserChatsDTO>> GetUserAvailableChats(long UserID)
     {
         User user = (await _db.Users.Include(u => u.enrolledChats).FirstOrDefaultAsync(u => u.ID == UserID))!;
-        Dictionary<string, long> chatsAvblToUsr = new Dictionary<string, long>();
+        List<UserChatsDTO> chatsAvblToUsr = new List<UserChatsDTO>();
         foreach (Chat i in user.enrolledChats)
         {
-            chatsAvblToUsr.Add($"{i.Name}", (long)i.ID!);
+            chatsAvblToUsr.Add(new UserChatsDTO(){ ID = i.ID, Name=i.Name});
         }
         return chatsAvblToUsr;
+    }
+
+    public async Task<List<string>> GetChatMembersAsync(User user, long chatID)
+    {
+        Chat? chat = await _db.Chats.Include(cht => cht.Members).FirstOrDefaultAsync(cht => cht.ID == chatID);
+        if (chat is null) { throw new ChatDoesntExistException("This chat doesn't exist"); }
+        if (chat.Members.Where(u => u.ID == user.ID).Count() <= 0)
+        {
+            throw new NotChatMemberException("You are not a participant of this chat");
+        }
+        return chat.Members.ConvertAll<string>(u => u.Username);
+
+        
     }
 
     public async Task SendMsgToChatAsync(long userid, SendChatMsgDTO scmDTO)
@@ -90,6 +99,8 @@ public class ChatService(DataContext _db) : IChatService
         {
             messages = messages.Where(m => m.OriginID != UserID && !m.readByUsers.Contains(user)).ToList();
         }
+
+        
 
 
 

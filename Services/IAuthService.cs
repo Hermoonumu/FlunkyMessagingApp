@@ -9,7 +9,7 @@ namespace MessagingApp.Services;
 public interface IAuthService
 {
     public ClaimsIdentity getClaims(User user);
-    public Task<Dictionary<string, string>> GenerateTokensAsync(User user);
+    public Task<Dictionary<string, string>> GenerateTokensAsync(User user, bool expired = false);
     public Task<TokenDTO> VerifyTokenAsync(string token);
     public Task<User> UserByJWTAsync(HttpContext context);
     public Task<string> ExtractTokenFromHeaderAsync(HttpContext context);

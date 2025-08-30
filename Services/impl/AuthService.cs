@@ -23,7 +23,7 @@ public class AuthService(DataContext _db,
         return claims;
     }
 
-    public async Task<Dictionary<string, string>> GenerateTokensAsync(User user)
+    public async Task<Dictionary<string, string>> GenerateTokensAsync(User user, bool expired = false)
     {
         Dictionary<string, string> tokens = new Dictionary<string, string>();
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -38,10 +38,10 @@ public class AuthService(DataContext _db,
             Subject = getClaims(user),
             Issuer = _conf.GetSection("SecConfig").GetValue<String>("Issuer"),
             Audience = _conf.GetSection("SecConfig").GetValue<String>("Audience"),
-            Expires = DateTime.Now.AddMinutes(30),
+            Expires = DateTime.Now.Add(expired?TimeSpan.FromSeconds(0):TimeSpan.FromMinutes(15)),
             SigningCredentials = credentials
         };
-                tokens.Add("accessToken", handler.WriteToken(handler.CreateToken(tokenDescriptor)));
+        tokens.Add("accessToken", handler.WriteToken(handler.CreateToken(tokenDescriptor)));
         byte[] randStringToken = new byte[128];
         RandomNumberGenerator.Create().GetBytes(randStringToken);
         tokens.Add("refreshToken", Convert.ToBase64String(randStringToken)!);

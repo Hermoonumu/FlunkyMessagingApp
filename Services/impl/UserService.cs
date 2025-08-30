@@ -9,13 +9,15 @@ namespace MessagingApp.Services.Implementation;
 
 public class UserService(DataContext _db) : IUserService
 {
-    public async Task<User> AddUserAsync(AuthDTO user)
+    public async Task<bool> AddUserAsync(AuthDTO user)
     {
         PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
-        User newRegUser = new User();
-        newRegUser.Username = user.Username;
+        User newRegUser = new User()
+        {
+            Username = user.Username!,
+            Role = Models.User.RoleENUM.USER
+        };
         newRegUser.PasswordHash = passwordHasher.HashPassword(newRegUser, user.Password);
-        newRegUser.Role = Models.User.RoleENUM.USER;
         try
         {
             await _db.Users.AddAsync(newRegUser);
@@ -25,10 +27,10 @@ public class UserService(DataContext _db) : IUserService
         {
             if (((NpgsqlException)e.InnerException).SqlState == "23505")
             {
-                return null;
+                return false;
             }
         }
-        return newRegUser;
+        return true;
     }
 
 
