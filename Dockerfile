@@ -29,6 +29,4 @@ COPY --from=BUILD /app/publish .
 
 EXPOSE 4200
 
-RUN dotnet ef database update
-
 ENTRYPOINT ["dotnet", "MessagingApp.dll"]
