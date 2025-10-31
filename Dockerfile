@@ -7,14 +7,14 @@ WORKDIR /src
 
 COPY *.csproj ./
 
-RUN dotnet restore
+RUN dotnet restore MessagingApp.csproj
 
 RUN rm -rf bin obj
 
 COPY . .
 
 
-RUN dotnet publish MessagingApp.sln -c Release -o /app/publish /p:Exclude="MessagingAppTests"
+RUN dotnet publish MessagingApp.csproj -c Release -o /app/publish /p:Exclude="MessagingAppTests"
 
 
 
