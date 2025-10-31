@@ -1,0 +1,11 @@
+services:
+  flunkymessagingapp:
+    build: .
+    expose:
+      - 5000
+    networks:
+      - internalnet
+
+networks:
+ internalnet:
+  driver: bridge
