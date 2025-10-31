@@ -14,7 +14,8 @@ RUN rm -rf bin obj
 COPY . .
 
 
-RUN dotnet publish MessagingApp.csproj -c Release -o /app/publish
+RUN dotnet publish MessagingApp.sln -c Release -o /app/publish /p:Exclude="MessagingAppTests"
+
 
 
 
