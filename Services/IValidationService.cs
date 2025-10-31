@@ -7,6 +7,7 @@ namespace MessagingApp.Services;
 public interface IValidationService
 {
     public Task AddUserValidateAsync(AuthDTO authDTO);
-    public Task<Chat> ValidateChatAlreadyExists(object chatIdentifier);
-    public Task<Chat> ValidateChatDoesntExist(object chatIdentifier);
+    public Task<Chat> VerifyChatAlreadyExists(object chatIdentifier);
+    public Task<Chat> VerifyChatDoesntExist(object chatIdentifier);
+    public Task<User> VerifyUserAlreadyExists(string username);
 }

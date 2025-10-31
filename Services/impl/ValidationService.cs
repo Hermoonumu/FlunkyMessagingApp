@@ -19,20 +19,20 @@ public class ValidationService(DataContext _db) : IValidationService
         if (authDTO.Password.Count() < 8) throw new PasswordTooShortException();
     }
 
-    public async Task<Chat> ValidateChatDoesntExist(object chatIdentifier)
+    public async Task<Chat> VerifyChatDoesntExist(object chatIdentifier)
     {
         Chat? chat;
-        if (chatIdentifier is int chatId)
+        if (chatIdentifier is long chatId)
         {
             chat = await _db.Chats.FindAsync(chatId);
-            if (chat == null)
-                throw new ChatDoesntExistException();
+            if (chat != null)
+                throw new ChatAlreadyExistsException("This chat already exists");
         }
         else if (chatIdentifier is string chatName)
         {
             chat = await _db.Chats.FirstOrDefaultAsync(c => c.Name == chatName);
-            if (chat == null)
-                throw new ChatDoesntExistException();
+            if (chat != null)
+                throw new ChatAlreadyExistsException("This chat already exists");
         }
         else
         {
@@ -41,20 +41,20 @@ public class ValidationService(DataContext _db) : IValidationService
         return chat;
     }
 
-    public async Task<Chat> ValidateChatAlreadyExists(object chatIdentifier)
+    public async Task<Chat> VerifyChatAlreadyExists(object chatIdentifier)
     {
         Chat? chat;
-        if (chatIdentifier is int chatId)
+        if (chatIdentifier is long chatId)
         {
-            chat = await _db.Chats.FindAsync(chatId);
-            if (chat != null)
-                throw new ChatAlreadyExistsException();
+            chat = await _db.Chats.Include(cht => cht.Members).FirstOrDefaultAsync(c => c.ID == chatId);
+            if (chat == null)
+                throw new ChatDoesntExistException("This chat doesn't exist");
         }
         else if (chatIdentifier is string chatName)
         {
-            chat = await _db.Chats.FirstOrDefaultAsync(c => c.Name == chatName);
-            if (chat != null)
-                throw new ChatAlreadyExistsException();
+            chat = await _db.Chats.Include(cht => cht.Members).FirstOrDefaultAsync(c => c.Name == chatName);
+            if (chat == null)
+                throw new ChatDoesntExistException("This chat doesn't exist");
         }
         else
         {
@@ -62,4 +62,14 @@ public class ValidationService(DataContext _db) : IValidationService
         }
         return chat;
     }
+
+        public async Task<User> VerifyUserAlreadyExists(string username)
+    {
+        User? user;
+            user = await _db.Users.FirstOrDefaultAsync(c => c.Username == username);
+            if (user == null)
+                throw new UserDoesntExistException("This user doesn't exist");
+        return user;
+    }
+
 }

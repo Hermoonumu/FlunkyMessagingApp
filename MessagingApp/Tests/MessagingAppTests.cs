@@ -9,6 +9,7 @@ using Xunit;
 
 namespace MessagingApp.Tests;
 
+
 public class AuthControllerTests
 {
     private readonly HttpClient _client;
@@ -217,12 +218,22 @@ public class AuthControllerTests
     public async Task CreateChat_RegisterUserAndCreateEmptyChat_ReturnSuccess()
     {
         var user1 = await RegisterAndLoginUser();
-
+        var newChat = new { name = Guid.NewGuid().ToString(), members = new List<string>() };
         var request = new HttpRequestMessage(HttpMethod.Post, "/api/chats/newChat");
-        request.Content = JsonContent.Create(new { name = Guid.NewGuid().ToString(), members = new List<string>() });
+        request.Content = JsonContent.Create(newChat);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user1.accessToken);
         var result = await _client.SendAsync(request);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+
+        request = new HttpRequestMessage(HttpMethod.Get, "/api/chats/myChats");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user1.accessToken);
+        result = await _client.SendAsync(request);
+        bool chatPresent = false;
+        foreach (var i in await result.Content.ReadFromJsonAsync<List<UserChatsDTO>>())
+        {
+            if (i.Name == newChat.name) chatPresent = true;
+        }
+        Assert.True(chatPresent);
     }
 
     [Fact]
@@ -255,15 +266,25 @@ public class AuthControllerTests
         request = new HttpRequestMessage(HttpMethod.Get, "/api/chats/myChats");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user1.accessToken);
         var result = await (await _client.SendAsync(request)).Content.ReadFromJsonAsync<List<UserChatsDTO>>();
-
+        List<long> chatIDs = new List<long>();
         foreach (UserChatsDTO i in result)
         {
+            chatIDs.Add((long)i.ID!);
             request = new HttpRequestMessage(HttpMethod.Post, "/api/chats/newMember");
             request.Content = JsonContent.Create(new { chatID = i.ID, members = new List<string>() { user2.username! } });
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user1.accessToken);
             var response = await _client.SendAsync(request);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
+        request = new HttpRequestMessage(HttpMethod.Get, $"/api/chats/memberList?chatID={chatIDs[0]}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user1.accessToken);
+        var result3 = await _client.SendAsync(request);
+        bool userPresent = false;
+        foreach (var i in await result3.Content.ReadFromJsonAsync<List<string>>())
+        {
+            if (i == user2.username) userPresent = true;
+        }
+        Assert.True(userPresent);
     }
 
 }

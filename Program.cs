@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,17 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File(new Serilog.Formatting.Json.JsonFormatter(),
+    builder.Configuration.GetValue<string>("LoggerPath") ?? "./Logs/Log-.json",
+    rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
@@ -29,6 +42,9 @@ builder.Services.AddScoped<IValidationService, ValidationService>();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(option => { option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+
+builder.Services.AddSignalR();
 
 builder.Services.AddOpenApi();
 
@@ -45,7 +61,7 @@ builder.Services
         x.TokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-                builder.Configuration.GetSection("SecConfig").GetValue<String>("PrivateKey")
+                builder.Configuration.GetSection("SecConfig").GetValue<String>("PrivateKey")!
             )),
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
@@ -62,7 +78,7 @@ builder.Services
                 var db = context.HttpContext.RequestServices.GetRequiredService<DataContext>();
                 var jti = context.SecurityToken.Id;
                 var isRevoked = await db.revokedJWTs.FirstOrDefaultAsync(x => x.JTI == jti);
-                if (isRevoked!=null){ context.Fail("Token has been revoked"); }
+                if (isRevoked != null) { context.Fail("Token has been revoked"); }
             }
         };
     });
@@ -81,14 +97,15 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsJsonAsync(new { Message = "Error has occurred "+e.GetBaseException() });
+        await context.Response.WriteAsJsonAsync(new { Message = "Error has occurred " + e.GetType() });
     }
 });
 
-app.Urls.Add("http://0.0.0.0:6865");
+app.Urls.Add("http://0.0.0.0:4200");
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
 
 app.UseCors("AllowAngularApp");
 

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessagingApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250830154106_initial")]
+    [Migration("20250917195230_initial")]
     partial class initial
     {
         /// <inheritdoc />

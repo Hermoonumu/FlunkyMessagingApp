@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "F5nFaq7No4o=",
+  "dgSpecHash": "c4jxWjkak/s=",
   "success": true,
   "projectFilePath": "/run/media/hermoonumu/DATA/Project/Learning/MyWebApp/MessagingApp/MessagingApp.csproj",
   "expectedPackageFiles": [
@@ -71,6 +71,15 @@
     "/home/hermoonumu/.nuget/packages/npgsql/9.0.3/npgsql.9.0.3.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.4/npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/scalar.aspnetcore/2.5.3/scalar.aspnetcore.2.5.3.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog/4.2.0/serilog.4.2.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.aspnetcore/9.0.0/serilog.aspnetcore.9.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.extensions.hosting/9.0.0/serilog.extensions.hosting.9.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.extensions.logging/9.0.0/serilog.extensions.logging.9.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.formatting.compact/3.0.0/serilog.formatting.compact.3.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.settings.configuration/9.0.0/serilog.settings.configuration.9.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.sinks.console/6.0.0/serilog.sinks.console.6.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.sinks.debug/3.0.0/serilog.sinks.debug.3.0.0.nupkg.sha512",
+    "/home/hermoonumu/.nuget/packages/serilog.sinks.file/7.0.0/serilog.sinks.file.7.0.0.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/system.codedom/6.0.0/system.codedom.6.0.0.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/system.collections/4.3.0/system.collections.4.3.0.nupkg.sha512",
     "/home/hermoonumu/.nuget/packages/system.collections.immutable/8.0.0/system.collections.immutable.8.0.0.nupkg.sha512",
