@@ -2,7 +2,7 @@ services:
   flunkymessagingapp:
     build: .
     expose:
-      - 5000
+      - 4200
     networks:
       - internalnet
 
